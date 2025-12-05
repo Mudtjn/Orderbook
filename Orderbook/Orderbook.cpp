@@ -3,6 +3,36 @@
 #include <chrono>
 #include <ctime>
 
+void Orderbook::OnOrderAdded(OrderPointer order) {
+	UpdateLevelData(order->GetPrice(), order->GetRemainingQuantity(), LevelData::Action::Add);
+}
+
+void Orderbook::OnOrderCancelled(OrderPointer order) {
+	UpdateLevelData(order->GetPrice(), order->GetRemainingQuantity(), LevelData::Action::Remove);
+}
+
+void Orderbook::OnOrderMatched(Price price, Quantity quantity, bool isFullyFilled) {
+	UpdateLevelData(price, quantity, isFullyFilled ? LevelData::Action::Remove : LevelData::Action::Match);
+}
+
+void Orderbook::UpdateLevelData(Price price, Quantity quantity, LevelData::Action action) {
+	auto& data = data_[price];
+
+	data.count_ += action == LevelData::Action::Remove ? -1: 
+		action == LevelData::Action::Add ? 1 : 0;
+
+	if(action == LevelData::Action::Remove || action == LevelData::Action::Match) {
+		data.quantity_ -= quantity;
+	}
+	else {
+		data.quantity_ += quantity;
+	}
+
+	if (data.count_ == 0) {
+		data_.erase(price);
+	}
+}
+
 bool Orderbook::canMatch(Side side, Price price) const {
 	if (side == Side::Buy) {
 		if (asks_.empty()) {
@@ -46,7 +76,7 @@ void Orderbook::CancelOrderInternal(OrderId orderId) {
 		}
 	}
 
-	//onOrderCancelled(order); 
+	OnOrderCancelled(order); 
 }
 
 void Orderbook::CancelOrders(OrderIds orderIds) {
@@ -152,6 +182,9 @@ Trades Orderbook::MatchOrders() {
 				TradeInfo{ bid->GetOrderId(), bid->GetPrice(), quantity},
 				TradeInfo{ ask->GetOrderId(), ask->GetPrice(), quantity}
 				});
+
+			OnOrderMatched(bid->GetPrice(), quantity, bid->isFilled());
+			OnOrderMatched(ask->GetPrice(), quantity, ask->isFilled());
 		}
 	}
 
@@ -172,6 +205,39 @@ Trades Orderbook::MatchOrders() {
 	}
 
 	return trades;
+}
+
+// checks if an order can be fully filled
+bool Orderbook::CanFullyFill(Side side, Price price, Quantity quantity) const {
+	if (!canMatch(side, price))
+		return false;
+
+	std::optional<Price> threshold; 
+	if (side == Side::Buy) {
+		const auto [askPrice, _] = *asks_.begin(); 
+		threshold = askPrice; 
+	}
+	else {
+		const auto [bidPrice, _] = *bids_.begin();
+		threshold = bidPrice;
+	}
+
+	for (const auto& [levelPrice, levelData] : data_) {
+		if (threshold.has_value() &&
+			(side == Side::Buy && levelPrice > threshold.value()) || 
+			(side == Side::Sell && levelPrice < threshold.value()))
+			continue; 
+
+		if ((side == Side::Buy && levelPrice > price) ||
+			(side == Side::Sell && levelPrice < price))
+			continue; 
+
+		if(quantity <= levelData.quantity_) {
+			return true; 
+		}
+		quantity -= levelData.quantity_;
+	}
+	return false; 
 }
 
 Trades Orderbook::AddOrder(OrderPointer order) {
@@ -195,9 +261,11 @@ Trades Orderbook::AddOrder(OrderPointer order) {
 			return {};
 	}
 
-
 	if (order->GetOrderType() == OrderType::FillAndKill && !canMatch(order->GetSide(), order->GetPrice()))
 		return {};
+
+	if (order->GetOrderType() == OrderType::FillOrKill && !CanFullyFill(order->GetSide(), order->GetPrice(), order->GetInitialQuantity()))
+		return {}; 
 
 	OrderPointers::iterator iterator;
 
@@ -212,6 +280,7 @@ Trades Orderbook::AddOrder(OrderPointer order) {
 		iterator = std::next(orders.begin(), orders.size() - 1);
 	}
 	orders_.insert({ order->GetOrderId(), OrderEntry{ order, iterator } });
+	OnOrderAdded(order);
 	return MatchOrders();
 }
 
@@ -278,4 +347,18 @@ OrderbookLevelInfos Orderbook::GetOrderInfos() const {
 		askInfos.push_back(CreateLevelInfos(price, const_cast<OrderPointers&>(orders)));
 	}
 	return OrderbookLevelInfos{ bidInfos, askInfos };
+}
+
+Orderbook::Orderbook() 
+	: ordersPruneThread_{ [this] {PruneGoodForDayOrders();  } }
+{}
+
+Orderbook::~Orderbook() {
+	// shutdown stores true with release semantics
+	// all operations before the store in this thread
+	shutdown_.store(true, std::memory_order_release);
+	// notify the condition variable to wake up the thread
+	shutdownConditionVariable_.notify_one(); 
+	// join thread back to main thread
+	ordersPruneThread_.join();
 }
