@@ -155,8 +155,8 @@ Trades Orderbook::MatchOrders() {
 		}
 
 		while (!bids.empty() && !asks.empty()) {
-			auto& bid = bids.front();
-			auto& ask = asks.front();
+			auto bid = bids.front();
+			auto ask = asks.front();
 
 			Quantity quantity = std::min(bid->GetRemainingQuantity(), ask->GetRemainingQuantity());
 			bid->Fill(quantity);
