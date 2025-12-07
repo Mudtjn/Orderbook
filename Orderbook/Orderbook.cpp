@@ -154,7 +154,7 @@ Trades Orderbook::MatchOrders() {
 			break;
 		}
 
-		while (bids.size() && asks.size()) {
+		while (!bids.empty() && !asks.empty()) {
 			auto& bid = bids.front();
 			auto& ask = asks.front();
 
@@ -172,11 +172,6 @@ Trades Orderbook::MatchOrders() {
 				orders_.erase(ask->GetOrderId());
 			}
 
-			if (bids.empty())
-				bids_.erase(bidPrice);
-
-			if (asks.empty())
-				asks_.erase(askPrice);
 
 			trades.push_back(Trade{
 				TradeInfo{ bid->GetOrderId(), bid->GetPrice(), quantity},
@@ -185,6 +180,16 @@ Trades Orderbook::MatchOrders() {
 
 			OnOrderMatched(bid->GetPrice(), quantity, bid->isFilled());
 			OnOrderMatched(ask->GetPrice(), quantity, ask->isFilled());
+		}
+
+		if (bids.empty()) {
+			bids_.erase(bidPrice);
+			data_.erase(bidPrice);
+		}
+		if (asks.empty())
+		{
+			asks_.erase(askPrice);
+			data_.erase(askPrice); 
 		}
 	}
 
@@ -224,8 +229,8 @@ bool Orderbook::CanFullyFill(Side side, Price price, Quantity quantity) const {
 
 	for (const auto& [levelPrice, levelData] : data_) {
 		if (threshold.has_value() &&
-			(side == Side::Buy && levelPrice > threshold.value()) || 
-			(side == Side::Sell && levelPrice < threshold.value()))
+			(side == Side::Buy && threshold.value() > levelPrice ) || 
+			(side == Side::Sell && threshold.value() < levelPrice ))
 			continue; 
 
 		if ((side == Side::Buy && levelPrice > price) ||
@@ -249,11 +254,11 @@ Trades Orderbook::AddOrder(OrderPointer order) {
 		return {};
 
 	if (order->GetOrderType() == OrderType::Market) {
-		if(order->GetSide() == Side::Buy && !asks_.empty()) {
+		if (order->GetSide() == Side::Buy && !asks_.empty()) {
 			const auto& [worstAsk, _] = *asks_.rbegin();
 			order->ToGoodTillCancel(worstAsk);
 		}
-		else if(order->GetSide() == Side::Buy && !bids_.empty()) {
+		else if (order->GetSide() == Side::Sell && !bids_.empty()) {
 			const auto& [worstBid, _] = *bids_.rbegin();
 			order->ToGoodTillCancel(worstBid);
 		}
@@ -285,26 +290,8 @@ Trades Orderbook::AddOrder(OrderPointer order) {
 }
 
 void Orderbook::CancelOrder(OrderId orderId) {
-	if (!orders_.contains(orderId))
-		return;
-
-	const auto& [order, orderIterator] = orders_.at(orderId);
-	orders_.erase(orderId);
-
-	if (order->GetSide() == Side::Sell) {
-		auto price = order->GetPrice();
-		auto& orders = asks_.at(price);
-		orders.erase(orderIterator);
-		if (orders.empty())
-			asks_.erase(price);
-	}
-	else {
-		auto price = order->GetPrice();
-		auto& orders = bids_.at(price);
-		orders.erase(orderIterator);
-		if (orders.empty())
-			bids_.erase(price);
-	}
+	std::scoped_lock orderLock{ ordersMutex_ }; 
+	CancelOrderInternal(orderId); 
 }
 
 Trades Orderbook::ModifyOrder(OrderModify order) {

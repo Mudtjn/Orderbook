@@ -57,7 +57,11 @@ private:
 
 	bool CanFullyFill(Side side, Price price, Quantity quantity) const; 
 public:
-	Orderbook(); 
+	Orderbook();
+	Orderbook(const Orderbook&) = delete; 
+	void operator=(const Orderbook&) = delete; 
+	Orderbook(Orderbook&) = delete; 
+	void operator=(Orderbook&) = delete; 
 	Trades AddOrder(OrderPointer order);
 	void CancelOrder(OrderId orderId);
 	Trades ModifyOrder(OrderModify order); 
