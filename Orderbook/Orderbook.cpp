@@ -1,4 +1,6 @@
 #include "Orderbook.h"
+#include "BindSide.h"
+#include "pybind11/pybind11.h"
 #include <chrono>
 #include <ctime>
 #include <numeric>
@@ -351,4 +353,9 @@ Orderbook::~Orderbook() {
   shutdownConditionVariable_.notify_one();
   // join thread back to main thread
   ordersPruneThread_.join();
+}
+
+PYBIND11_MODULE(orderbook, m, py::mod_gil_not_used()) {
+  m.doc() = "pybind orderbook plugin";
+  bindSide(m);
 }

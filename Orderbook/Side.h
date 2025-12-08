@@ -1,5 +1,6 @@
 #pragma once
-enum class Side {
-	Buy,
-	Sell
-};
+#include "Bindings.h"
+
+enum class Side { Buy, Sell };
+
+
