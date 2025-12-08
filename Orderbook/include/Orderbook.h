@@ -1,4 +1,6 @@
 #pragma once
+#include "BindOrderTypes.h"
+#include "BindSide.h"
 #include "Order.h"
 #include "OrderModify.h"
 #include "OrderbookLevelInfos.h"

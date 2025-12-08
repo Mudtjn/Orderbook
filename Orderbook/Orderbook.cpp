@@ -1,6 +1,4 @@
-#include "Orderbook.h"
-#include "BindSide.h"
-#include "pybind11/pybind11.h"
+#include "include/Orderbook.h"
 #include <chrono>
 #include <ctime>
 #include <numeric>
@@ -358,4 +356,5 @@ Orderbook::~Orderbook() {
 PYBIND11_MODULE(orderbook, m, py::mod_gil_not_used()) {
   m.doc() = "pybind orderbook plugin";
   bindSide(m);
+  bindOrderTypes(m);
 }
