@@ -1,8 +1,7 @@
-#pragma once
 #include "Orderbook.h"
 
 int main() {
-	Orderbook orderbook; 
+  Orderbook orderbook{};
 
-	return 0; 
+  return 0;
 }

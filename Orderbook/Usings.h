@@ -1,8 +1,9 @@
 #pragma once
 #include <iostream>
+#include <stdint.h>
 #include <vector>
 
-using Price = std::int32_t;
-using Quantity = std::uint32_t;
-using OrderId = std::uint64_t;
+using Price = int32_t;
+using Quantity = uint32_t;
+using OrderId = uint64_t;
 using OrderIds = std::vector<OrderId>;
