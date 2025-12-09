@@ -357,4 +357,6 @@ PYBIND11_MODULE(orderbook, m, py::mod_gil_not_used()) {
   m.doc() = "pybind orderbook plugin";
   bindSide(m);
   bindOrderTypes(m);
+  bindLevelInfo(m);
+  bindOrderbookLevelInfos(m);
 }

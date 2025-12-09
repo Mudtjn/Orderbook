@@ -1,9 +1,9 @@
 #pragma once
 #include "BindOrderTypes.h"
+#include "BindOrderbookLevelInfos.h"
 #include "BindSide.h"
 #include "Order.h"
 #include "OrderModify.h"
-#include "OrderbookLevelInfos.h"
 #include "Trades.h"
 #include "Usings.h"
 #include <atomic>
