@@ -26,6 +26,5 @@ Notes:
 1. To build Orderbook:
 
 ```bash
-c++ -O3 -Wall -shared -std=c++20 -fPIC $(python3 -m pybind11 --includes) BindLevelInfo.cpp BindOrderTypes.cpp BindSide.cpp Orderbook.cpp -o orderbook$(python3-config --extension-suffix)
+c++ -O3 -Wall -shared -std=c++20 -fPIC $(python3 -m pybind11 --includes) Side.cpp OrderTypes.cpp BindOrder.cpp BindOrderModify.cpp BindOrderbook.cpp BindOrderbookLevelInfos.cpp BindLevelInfo.cpp BindOrderTypes.cpp BindSide.cpp Orderbook.cpp -o orderbook$(python3-config --extension-suffix)
 ```
-
