@@ -359,4 +359,6 @@ PYBIND11_MODULE(orderbook, m, py::mod_gil_not_used()) {
   bindOrderTypes(m);
   bindLevelInfo(m);
   bindOrderbookLevelInfos(m);
+  bindOrder(m);
+  bindOrderModify(m);
 }

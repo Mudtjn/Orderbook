@@ -3,24 +3,22 @@
 
 class OrderModify {
 public:
-	OrderModify(OrderId orderId, Side side, Price price, Quantity quantity)
-		: orderId_{ orderId },
-		price_{ price },
-		side_{ side },
-		quantity_{ quantity } {
-	}
+  OrderModify(OrderId orderId, Side side, Price price, Quantity quantity)
+      : orderId_{orderId}, price_{price}, side_{side}, quantity_{quantity} {}
 
-	OrderId GetOrderId() const { return orderId_; }
-	Side GetSide() const { return side_; }
-	Price GetPrice() const { return price_; }
-	Quantity GetQuantity() const { return quantity_; }
+  OrderId GetOrderId() const { return orderId_; }
+  Side GetSide() const { return side_; }
+  Price GetPrice() const { return price_; }
+  Quantity GetQuantity() const { return quantity_; }
 
-	OrderPointer ToOrderPointer(OrderType orderType) const {
-		return std::make_shared<Order>(orderType, GetOrderId(), GetSide(), GetPrice(), GetQuantity());
-	}
+  OrderPointer ToOrderPointer(OrderType orderType) const {
+    return std::make_shared<Order>(orderType, GetOrderId(), GetSide(),
+                                   GetPrice(), GetQuantity());
+  }
+
 private:
-	OrderId orderId_;
-	Side side_;
-	Price price_;
-	Quantity quantity_;
+  OrderId orderId_;
+  Side side_;
+  Price price_;
+  Quantity quantity_;
 };
