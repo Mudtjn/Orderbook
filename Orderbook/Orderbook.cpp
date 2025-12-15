@@ -1,3 +1,4 @@
+#include "include/Orderbook.h"
 #include "include/BindOrderbook.h"
 #include <chrono>
 #include <ctime>
@@ -358,8 +359,9 @@ PYBIND11_MODULE(orderbook, m, py::mod_gil_not_used()) {
   bindSide(m);
   bindOrderTypes(m);
   bindLevelInfo(m);
-  bindOrderbookLevelInfos(m);
   bindOrder(m);
   bindOrderModify(m);
+  bindTrades(m);
+  bindOrderbookLevelInfos(m);
   bindOrderbook(m);
 }

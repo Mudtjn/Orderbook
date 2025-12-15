@@ -4,7 +4,7 @@
 #include "BindOrderTypes.h"
 #include "BindOrderbookLevelInfos.h"
 #include "BindSide.h"
-#include "Trades.h"
+#include "BindTrades.h"
 #include "Usings.h"
 #include <atomic>
 #include <condition_variable>

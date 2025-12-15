@@ -17,6 +17,7 @@ SOURCES = Side.cpp \
           BindLevelInfo.cpp \
           BindOrderTypes.cpp \
           BindSide.cpp \
+					BindTrades.cpp \
           Orderbook.cpp
 
 # Object files (optional, for incremental builds)
