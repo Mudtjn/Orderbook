@@ -5,11 +5,13 @@
 void bindOrder(py::module &m) {
   py::class_<Order, std::shared_ptr<Order>>(m, "Order", "constructor for Order")
       .def(py::init<OrderType, OrderId, Side, Price, Quantity>(),
-           py::arg("OrderType"), py::arg("orderId"), py::arg("side"),
+           py::arg("OrderType"), py::arg("OrderId"), py::arg("side"),
            py::arg("price"), py::arg("quantity"),
+           "constructor for modify orders")
+      .def(py::init<OrderType, Side, Price, Quantity>(), py::arg("OrderType"),
+           py::arg("side"), py::arg("price"), py::arg("quantity"),
            "constructor for order with required params")
-      .def(py::init<OrderId, Side, Quantity>(), py::arg("orderId"),
-           py::arg("side"), py::arg("quantity"),
+      .def(py::init<Side, Quantity>(), py::arg("side"), py::arg("quantity"),
            "constructor for market orders")
       .def_property_readonly("orderType", &Order::GetOrderType,
                              py::return_value_policy::reference_internal,

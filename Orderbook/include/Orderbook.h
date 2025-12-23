@@ -40,6 +40,7 @@ private:
   // to block until specific condition is met
   std::condition_variable shutdownConditionVariable_;
   std::atomic<bool> shutdown_{false};
+  std::atomic<OrderId> orderId{1};
   bool canMatch(Side side, Price price) const;
 
   Trades MatchOrders();

@@ -10,6 +10,7 @@ TARGET = orderbook$(EXT_SUFFIX)
 # Source files
 SOURCES = Side.cpp \
           OrderTypes.cpp \
+					Order.cpp \
           BindOrder.cpp \
           BindOrderModify.cpp \
           BindOrderbook.cpp \

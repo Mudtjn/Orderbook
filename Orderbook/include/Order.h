@@ -3,6 +3,7 @@
 #include "OrderTypes.h"
 #include "Side.h"
 #include "Usings.h"
+#include <atomic>
 #include <format>
 #include <list>
 #include <memory>
@@ -10,13 +11,10 @@ class Order {
 public:
   Order(OrderType orderType, OrderId orderId, Side side, Price price,
         Quantity quantity)
-      : orderType_{orderType}, side_{side}, orderId_{orderId}, price_{price},
+      : orderType_{orderType}, orderId_{orderId}, side_{side}, price_{price},
         initialQuantity_{quantity}, remainingQuantity_{quantity} {}
-
-  Order(OrderId orderId, Side side, Quantity quantity)
-      : orderType_{OrderType::Market}, side_{side}, orderId_{orderId},
-        price_{Constants::InvalidPrice}, initialQuantity_{quantity},
-        remainingQuantity_{quantity} {}
+  Order(OrderType orderType, Side side, Price price, Quantity quantity);
+  Order(Side side, Quantity quantity);
 
   OrderId GetOrderId() const { return orderId_; }
   Side GetSide() const { return side_; }
@@ -51,6 +49,8 @@ public:
   }
 
 private:
+  static snowflake_t uuid;
+  std::atomic<bool> isInitialOrder;
   OrderType orderType_;
   Side side_;
   OrderId orderId_;
