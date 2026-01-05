@@ -1,0 +1,90 @@
+syntax = "proto3";
+
+// OrderbookService provides operations for managing orders in a financial trading system.
+// This service supports both limit orders and market orders with various order types.
+service OrderbookService {
+  // AddOrder places a new limit order with a specified price.
+  // The order will be added to the order book and matched according to the specified order type.
+  rpc AddOrder(AddOrderRequest) returns (AddOrderResponse);
+  
+  // AddMarketOrder places a new market order.
+  // Market orders are executed immediately at the best available price in the market.
+  rpc AddMarketOrder(AddMarketOrderRequest) returns (AddOrderResponse);
+}
+
+// Side represents whether an order is to buy or sell an asset.
+enum Side {
+  // Buy indicates the order is to purchase the asset.
+  BUY = 0;
+  
+  // Sell indicates the order is to sell the asset.
+  SELL = 1;
+}
+
+// OrderType defines the time-in-force and execution behavior of an order.
+enum OrderType {
+  // GoodTillCancel: Order remains active until explicitly cancelled by the user.
+  GOOD_TILL_CANCEL = 0;
+  
+  // FillAndKill: Order must be filled immediately in its entirety or cancelled.
+  FILL_AND_KILL = 1;
+  
+  // FillOrKill: Order must be filled immediately, either completely or not at all.
+  FILL_OR_KILL = 2;
+  
+  // GoodForDay: Order remains active until the end of the trading day.
+  GOOD_FOR_DAY = 3;
+}
+
+// AddMarketOrderRequest contains the parameters for placing a market order.
+// Market orders are executed at the current best available market price.
+message AddMarketOrderRequest {
+  // side indicates whether this is a buy or sell order.
+  Side side = 1;
+  
+  // quantity is the number of units to buy or sell.
+  uint32 quantity = 2;
+}
+
+// AddOrderRequest contains the parameters for placing a limit order.
+// Limit orders are executed at a specified price or better.
+message AddOrderRequest {
+  // side indicates whether this is a buy or sell order.
+  Side side = 1;
+  
+  // orderType defines how the order should be handled (e.g., GoodTillCancel, FillAndKill).
+  OrderType order_type = 2;
+  
+  // price is the limit price at which the order should be executed.
+  // For buy orders, this is the maximum price to pay.
+  // For sell orders, this is the minimum price to accept.
+  uint32 price = 3;
+  
+  // quantity is the number of units to buy or sell.
+  uint32 quantity = 4;
+}
+
+// AddOrderResponse contains the result of an order placement operation.
+message AddOrderResponse {
+  // orderId is a unique identifier assigned to the order.
+  uint64 order_id = 1;
+  
+  // orderType indicates the type of order that was placed.
+  OrderType order_type = 2;
+  
+  // side indicates whether the order is a buy or sell order.
+  Side side = 3;
+  
+  // price is the execution price for the order.
+  // For market orders, this will be the actual execution price.
+  // For limit orders, this will be the specified limit price.
+  uint32 price = 4;
+  
+  // initialQuantity is the original quantity specified when placing the order.
+  uint32 initial_quantity = 5;
+  
+  // filledQuantity is the amount that has been executed so far.
+  // For FillAndKill or FillOrKill orders, this will be either 0 or initialQuantity.
+  // For other order types, this may be partially filled.
+  uint32 filled_quantity = 6;
+}
