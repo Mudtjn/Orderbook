@@ -1,4 +1,5 @@
 syntax = "proto3";
+import "google/protobuf/empty.proto";
 
 // OrderbookService provides operations for managing orders in a financial trading system.
 // This service supports both limit orders and market orders with various order types.
@@ -10,6 +11,10 @@ service OrderbookService {
   // AddMarketOrder places a new market order.
   // Market orders are executed immediately at the best available price in the market.
   rpc AddMarketOrder(AddMarketOrderRequest) returns (AddOrderResponse);
+
+  // CancelOrder removes an existing order from the order book.
+  // The order to be cancelled is identified by its unique order ID.
+  rpc CancelOrder(CancelOrderRequest) returns (google.protobuf.Empty);
 }
 
 // Side represents whether an order is to buy or sell an asset.
@@ -64,27 +69,32 @@ message AddOrderRequest {
   uint32 quantity = 4;
 }
 
+message CancelOrderRequest {
+  // order_id is the unique identifier of the order to be cancelled.
+  uint64 order_id = 1;
+}
+
+message TradeInfo {
+  // order Id of the order executed as part of Trade
+  uint64 order_id = 1;
+
+  // price at which trade was executed
+  uint32 price = 2; 
+
+  // quantity at which trade was executed
+  uint32 quantity = 3; 
+}
+
+message Trade {
+  // bid_trade contains details of the trade executed for the bid order.
+  TradeInfo bid_trade = 1;
+
+  // ask_trade contains details of the trade executed for the ask order.
+  TradeInfo ask_trade = 2;
+}
+
 // AddOrderResponse contains the result of an order placement operation.
 message AddOrderResponse {
-  // orderId is a unique identifier assigned to the order.
-  uint64 order_id = 1;
-  
-  // orderType indicates the type of order that was placed.
-  OrderType order_type = 2;
-  
-  // side indicates whether the order is a buy or sell order.
-  Side side = 3;
-  
-  // price is the execution price for the order.
-  // For market orders, this will be the actual execution price.
-  // For limit orders, this will be the specified limit price.
-  uint32 price = 4;
-  
-  // initialQuantity is the original quantity specified when placing the order.
-  uint32 initial_quantity = 5;
-  
-  // filledQuantity is the amount that has been executed so far.
-  // For FillAndKill or FillOrKill orders, this will be either 0 or initialQuantity.
-  // For other order types, this may be partially filled.
-  uint32 filled_quantity = 6;
+  // trades is a list of trades that were executed as a result of placing the order.
+  repeated Trade trades = 1;
 }

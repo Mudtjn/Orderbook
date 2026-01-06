@@ -22,25 +22,32 @@ _runtime_version.ValidateProtobufRuntimeVersion(
 _sym_db = _symbol_database.Default()
 
 
+from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0cOrders.proto\">\n\x15\x41\x64\x64MarketOrderRequest\x12\x13\n\x04side\x18\x01 \x01(\x0e\x32\x05.Side\x12\x10\n\x08quantity\x18\x02 \x01(\r\"g\n\x0f\x41\x64\x64OrderRequest\x12\x13\n\x04side\x18\x01 \x01(\x0e\x32\x05.Side\x12\x1e\n\norder_type\x18\x02 \x01(\x0e\x32\n.OrderType\x12\r\n\x05price\x18\x03 \x01(\r\x12\x10\n\x08quantity\x18\x04 \x01(\r\"\x9b\x01\n\x10\x41\x64\x64OrderResponse\x12\x10\n\x08order_id\x18\x01 \x01(\x04\x12\x1e\n\norder_type\x18\x02 \x01(\x0e\x32\n.OrderType\x12\x13\n\x04side\x18\x03 \x01(\x0e\x32\x05.Side\x12\r\n\x05price\x18\x04 \x01(\r\x12\x18\n\x10initial_quantity\x18\x05 \x01(\r\x12\x17\n\x0f\x66illed_quantity\x18\x06 \x01(\r*\x19\n\x04Side\x12\x07\n\x03\x42UY\x10\x00\x12\x08\n\x04SELL\x10\x01*X\n\tOrderType\x12\x14\n\x10GOOD_TILL_CANCEL\x10\x00\x12\x11\n\rFILL_AND_KILL\x10\x01\x12\x10\n\x0c\x46ILL_OR_KILL\x10\x02\x12\x10\n\x0cGOOD_FOR_DAY\x10\x03\x32\x80\x01\n\x10OrderbookService\x12/\n\x08\x41\x64\x64Order\x12\x10.AddOrderRequest\x1a\x11.AddOrderResponse\x12;\n\x0e\x41\x64\x64MarketOrder\x12\x16.AddMarketOrderRequest\x1a\x11.AddOrderResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0cOrders.proto\x1a\x1bgoogle/protobuf/empty.proto\">\n\x15\x41\x64\x64MarketOrderRequest\x12\x13\n\x04side\x18\x01 \x01(\x0e\x32\x05.Side\x12\x10\n\x08quantity\x18\x02 \x01(\r\"g\n\x0f\x41\x64\x64OrderRequest\x12\x13\n\x04side\x18\x01 \x01(\x0e\x32\x05.Side\x12\x1e\n\norder_type\x18\x02 \x01(\x0e\x32\n.OrderType\x12\r\n\x05price\x18\x03 \x01(\r\x12\x10\n\x08quantity\x18\x04 \x01(\r\"&\n\x12\x43\x61ncelOrderRequest\x12\x10\n\x08order_id\x18\x01 \x01(\x04\">\n\tTradeInfo\x12\x10\n\x08order_id\x18\x01 \x01(\x04\x12\r\n\x05price\x18\x02 \x01(\r\x12\x10\n\x08quantity\x18\x03 \x01(\r\"E\n\x05Trade\x12\x1d\n\tbid_trade\x18\x01 \x01(\x0b\x32\n.TradeInfo\x12\x1d\n\task_trade\x18\x02 \x01(\x0b\x32\n.TradeInfo\"*\n\x10\x41\x64\x64OrderResponse\x12\x16\n\x06trades\x18\x01 \x03(\x0b\x32\x06.Trade*\x19\n\x04Side\x12\x07\n\x03\x42UY\x10\x00\x12\x08\n\x04SELL\x10\x01*X\n\tOrderType\x12\x14\n\x10GOOD_TILL_CANCEL\x10\x00\x12\x11\n\rFILL_AND_KILL\x10\x01\x12\x10\n\x0c\x46ILL_OR_KILL\x10\x02\x12\x10\n\x0cGOOD_FOR_DAY\x10\x03\x32\xbc\x01\n\x10OrderbookService\x12/\n\x08\x41\x64\x64Order\x12\x10.AddOrderRequest\x1a\x11.AddOrderResponse\x12;\n\x0e\x41\x64\x64MarketOrder\x12\x16.AddMarketOrderRequest\x1a\x11.AddOrderResponse\x12:\n\x0b\x43\x61ncelOrder\x12\x13.CancelOrderRequest\x1a\x16.google.protobuf.Emptyb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'Orders_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
-  _globals['_SIDE']._serialized_start=343
-  _globals['_SIDE']._serialized_end=368
-  _globals['_ORDERTYPE']._serialized_start=370
-  _globals['_ORDERTYPE']._serialized_end=458
-  _globals['_ADDMARKETORDERREQUEST']._serialized_start=16
-  _globals['_ADDMARKETORDERREQUEST']._serialized_end=78
-  _globals['_ADDORDERREQUEST']._serialized_start=80
-  _globals['_ADDORDERREQUEST']._serialized_end=183
-  _globals['_ADDORDERRESPONSE']._serialized_start=186
-  _globals['_ADDORDERRESPONSE']._serialized_end=341
-  _globals['_ORDERBOOKSERVICE']._serialized_start=461
-  _globals['_ORDERBOOKSERVICE']._serialized_end=589
+  _globals['_SIDE']._serialized_start=433
+  _globals['_SIDE']._serialized_end=458
+  _globals['_ORDERTYPE']._serialized_start=460
+  _globals['_ORDERTYPE']._serialized_end=548
+  _globals['_ADDMARKETORDERREQUEST']._serialized_start=45
+  _globals['_ADDMARKETORDERREQUEST']._serialized_end=107
+  _globals['_ADDORDERREQUEST']._serialized_start=109
+  _globals['_ADDORDERREQUEST']._serialized_end=212
+  _globals['_CANCELORDERREQUEST']._serialized_start=214
+  _globals['_CANCELORDERREQUEST']._serialized_end=252
+  _globals['_TRADEINFO']._serialized_start=254
+  _globals['_TRADEINFO']._serialized_end=316
+  _globals['_TRADE']._serialized_start=318
+  _globals['_TRADE']._serialized_end=387
+  _globals['_ADDORDERRESPONSE']._serialized_start=389
+  _globals['_ADDORDERRESPONSE']._serialized_end=431
+  _globals['_ORDERBOOKSERVICE']._serialized_start=551
+  _globals['_ORDERBOOKSERVICE']._serialized_end=739
 # @@protoc_insertion_point(module_scope)
